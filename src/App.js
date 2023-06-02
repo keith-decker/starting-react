@@ -9,8 +9,7 @@ import '@fontsource/roboto/700.css';
 
 import "./App.css";
 
-import PokemonType from "./PokemonType";
-import PokemonRow from "./components/PokemonRow";
+import PokemonContext from "./PokemonContext";
 import PokemonInfo from "./components/PokemonInfo";
 import PokemonFilter from "./components/PokemonFilter";
 import PokemonTable from "./components/PokemonTable";
@@ -45,24 +44,28 @@ function App() {
   }
 
   return (
+    <PokemonContext.Provider
+      value={{
+        filter,
+        filterSet,
+        pokemon,
+        pokemonSet,
+        selectedPokemon,
+        selectedPokemonSet
+      }}
+    >
     <PageContainer>
       <CssBaseline />
       <Title>Pokemon Search</Title>
       <TwoColumnLayout>
         <div>
-          <PokemonFilter
-            filter={filter}
-            filterSet={filterSet}
-          />
-          <PokemonTable
-            pokemon={pokemon}
-            filter={filter}
-            selectedPokemonSet={selectedPokemonSet}
-          />
+          <PokemonFilter />
+          <PokemonTable />
         </div>
-        {selectedPokemon && <PokemonInfo {...selectedPokemon} />}
+        <PokemonInfo />
       </TwoColumnLayout>
     </PageContainer>
+    </PokemonContext.Provider>
   );
 }
 
