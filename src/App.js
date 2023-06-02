@@ -1,6 +1,9 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { CssBaseline } from "@mui/material";
+import { createStore } from "redux";
+import { Provider, useSelector, useDispatch } from "react-redux";
+
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -13,9 +16,14 @@ import PokemonInfo from "./components/PokemonInfo";
 import PokemonFilter from "./components/PokemonFilter";
 import PokemonTable from "./components/PokemonTable";
 
-import PokemonContext from "./PokemonContext";
-
-const pokemonReducer = (state, action) => {
+const pokemonReducer = (
+    state = {
+      pokemon: [],
+      filter: "",
+      selectedPokemon: null
+    },
+    action
+  ) => {
   switch (action.type) {
     case 'SET_FILTER':
       return {
@@ -33,9 +41,11 @@ const pokemonReducer = (state, action) => {
         selectedPokemon: action.payload
       };
     default:
-      throw new Error("No Action");
+      return state;
   }
 }
+
+const store = createStore(pokemonReducer);
 
 const Title = styled.h1`
   text-align: center;
@@ -51,12 +61,9 @@ const TwoColumnLayout = styled.div`
   grid-column-gap: 1rem;
 `;
 
-function App() {
-  const [state, dispatch] = React.useReducer(pokemonReducer, {
-    pokemon: [],
-    filter: "",
-    selectedPokemon: null,
-  });
+function AppContainer() {
+  const dispatch = useDispatch();
+  const pokemon = useSelector(state => state.pokemon);
 
   React.useEffect(() => {
     fetch("/starting-react/pokemon.json")
@@ -64,30 +71,24 @@ function App() {
       .then((data) => dispatch({ type: "SET_POKEMON", payload: data }));
   }, []);
 
-  if (!state.pokemon) {
+  if (!pokemon) {
     return <div>Loading data</div>;
   }
 
   return (
-    <PokemonContext.Provider
-      value={{
-        state,
-        dispatch,
-      }}
-    >
-      <PageContainer>
-        <CssBaseline />
-        <Title>Pokemon Search</Title>
-        <TwoColumnLayout>
-          <div>
-            <PokemonFilter />
-            <PokemonTable />
-          </div>
-          <PokemonInfo />
-        </TwoColumnLayout>
-      </PageContainer>
-    </PokemonContext.Provider>
+    <PageContainer>
+      <CssBaseline />
+      <Title>Pokemon Search</Title>
+      <TwoColumnLayout>
+        <div>
+          <PokemonFilter />
+          <PokemonTable />
+        </div>
+        <PokemonInfo />
+      </TwoColumnLayout>
+    </PageContainer>
   );
 }
 
+const App = () => (<Provider store={store}><AppContainer /></Provider>)
 export default App;
