@@ -1,9 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { CssBaseline } from "@mui/material";
-import { createStore } from "redux";
-import { Provider, useSelector, useDispatch } from "react-redux";
-
+import useStore from "./store";
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -15,37 +13,6 @@ import "./App.css";
 import PokemonInfo from "./components/PokemonInfo";
 import PokemonFilter from "./components/PokemonFilter";
 import PokemonTable from "./components/PokemonTable";
-
-const pokemonReducer = (
-    state = {
-      pokemon: [],
-      filter: "",
-      selectedPokemon: null
-    },
-    action
-  ) => {
-  switch (action.type) {
-    case 'SET_FILTER':
-      return {
-        ...state,
-        filter: action.payload
-      };
-    case 'SET_POKEMON':
-      return {
-        ...state,
-        pokemon: action.payload
-      };
-    case 'SET_SELECTED_POKEMON':
-      return {
-        ...state,
-        selectedPokemon: action.payload
-      };
-    default:
-      return state;
-  }
-}
-
-const store = createStore(pokemonReducer);
 
 const Title = styled.h1`
   text-align: center;
@@ -61,20 +28,8 @@ const TwoColumnLayout = styled.div`
   grid-column-gap: 1rem;
 `;
 
-function AppContainer() {
-  const dispatch = useDispatch();
-  const pokemon = useSelector(state => state.pokemon);
-
-  React.useEffect(() => {
-    fetch("/starting-react/pokemon.json")
-      .then((resp) => resp.json())
-      .then((data) => dispatch({ type: "SET_POKEMON", payload: data }));
-  }, []);
-
-  if (!pokemon) {
-    return <div>Loading data</div>;
-  }
-
+function App() {
+  const pokemon = useStore((state) => state.pokemon);
   return (
     <PageContainer>
       <CssBaseline />
@@ -90,5 +45,4 @@ function AppContainer() {
   );
 }
 
-const App = () => (<Provider store={store}><AppContainer /></Provider>)
 export default App;

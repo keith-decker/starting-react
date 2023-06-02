@@ -1,9 +1,9 @@
 import React from 'react';
 import PokemonType from '../PokemonType';
-import { useSelector } from "react-redux";
+import useStore from '../store';
 
 const PokemonInfo = () => {
-    const selectedPokemon = useSelector( state => state.selectedPokemon );
+    const selectedPokemon = useStore((state) => state.selectedPokemon);
 
     return selectedPokemon ? (
         <div>
