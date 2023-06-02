@@ -2,13 +2,19 @@ import "./App.css";
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "@emotion/styled";
+import { Button } from "@mui/material";
+
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
 
 const PokemonRow = ({ pokemon, onSelect }) => (
   <tr key={pokemon.id}>
     <td>{pokemon.name.english}</td>
     <td>{pokemon.type.join(", ")}</td>
     <td>
-      <button onClick={() => onSelect(pokemon)}>Select!</button>
+      <Button variant="contained" color="primary" onClick={() => onSelect(pokemon)}>Select!</Button>
     </td>
   </tr>
 );
